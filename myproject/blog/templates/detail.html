@@ -1,0 +1,203 @@
+{% extends "base.html" %} {% block title %}
+<title>ทั้งหมด</title>
+{% endblock %} {% block content %}
+<div class="my-3">
+  <nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/" style="text-decoration: none">หน้าแรก</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">{{blog.name}}</li>
+    </ol>
+  </nav>
+
+  <h3>{{blog.name}}</h3>
+
+  <div class="mb-3">
+    <span class="badge bg-light text-dark me-2">
+      <i class="bi bi-calendar3"></i> {{blog.date}}
+    </span>
+    <span class="badge bg-primary me-2">
+      <i class="bi bi-folder"></i>
+      <a href="#" class="text-white text-decoration-none"
+        >{{blog.category.name}}</a
+      >
+    </span>
+    <span class="badge bg-success me-2">
+      <i class="bi bi-person"></i>
+      <a
+        href="{% url 'homeContentUser' blog.customer.id %}"
+        class="text-white text-decoration-none"
+      >
+        {{blog.customer.first_name}} {{blog.customer.last_name}}
+      </a>
+    </span>
+    <span class="badge bg-secondary">
+      <i class="bi bi-eye"></i> {{blog.views}}
+    </span>
+  </div>
+
+  <div class="card mb-4">
+    <img src="{{ blog.image.url }}" class="card-img-top" alt="..." />
+    <div class="card-body">
+      <p class="card-text">{{blog.content}}</p>
+    </div>
+  </div>
+
+  <!-- ส่วนคอมเม้นที่ปรับปรุงแล้ว -->
+  <div class="card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0"><i class="bi bi-chat-dots"></i> ความคิดเห็น</h5>
+    </div>
+    <div class="card-body">
+     <!-- ฟอร์มเพิ่มคอมเม้น -->
+{% if request.user.is_authenticated %}
+  <form action="{% url 'commented' blog.id %}" method="post">
+    {% csrf_token %}
+    <div class="mb-4">
+      <div class="input-group">
+        <span class="input-group-text">
+          <i class="bi bi-chat-square-text"></i>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="แสดงความคิดเห็น..."
+          aria-label="Comment input"
+          name="comment"
+          id="comment"
+        />
+        <button class="btn btn-primary" type="submit">
+          <i class="bi bi-send"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+{% else %}
+  <div class="mb-4 text-center">
+    <div class="alert alert-warning" role="alert">
+      กรุณา <a href="{% url 'login' %}">เข้าสู่ระบบ</a> เพื่อแสดงความคิดเห็น
+    </div>
+  </div>
+{% endif %}
+
+
+      <hr />
+
+      <!-- รายการคอมเม้น -->
+
+      {% if joy %} {% for i in joy %}
+      <div class="comment-list">
+        <div class="comment-item mb-3 p-3 border rounded bg-light">
+          <div class="d-flex align-items-center mb-2">
+            <div class="avatar me-3">
+              <i class="bi bi-person-circle fs-4 text-primary"></i>
+            </div>
+            <div class="flex-grow-1">
+              <h6 class="mb-0 fw-bold">
+                {{i.customer.first_name}} {{i.customer.last_name}}
+              </h6>
+              <small class="text-muted">
+                <i class="bi bi-clock"></i> {{i.created_at}}
+              </small>
+            </div>
+            {% if request.user == i.customer %}
+            <div class="dropdown">
+              <button
+                class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+              >
+                <i class="bi bi-three-dots"></i>
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a
+                    class="dropdown-item text-danger"
+                    href="{% url 'commenteddelete' i.id %}"
+                  >
+                    <i class="bi bi-trash"></i> ลบ
+                  </a>
+                </li>
+              </ul>
+            </div>
+            {% endif %}
+          </div>
+          <p class="mb-0">{{i.content}}</p>
+          <!-- <div class="comment-actions mt-2">
+            <button class="btn btn-sm btn-outline-primary me-2">
+              <i class="bi bi-hand-thumbs-up"></i> ถูกใจ
+            </button>
+            <button class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-reply"></i> ตอบกลับ
+            </button>
+          </div> -->
+        </div>
+
+        <!-- ตัวอย่างคอมเม้นเพิ่มเติม -->
+        <!-- <div class="comment-item mb-3 p-3 border rounded bg-light">
+          <div class="d-flex align-items-center mb-2">
+            <div class="avatar me-3">
+              <i class="bi bi-person-circle fs-4 text-success"></i>
+            </div>
+            <div class="flex-grow-1">
+              <h6 class="mb-0 fw-bold">สมชาย ใจดี</h6>
+              <small class="text-muted">
+                <i class="bi bi-clock"></i> 2 เดือนที่แล้ว
+              </small>
+            </div>
+            <div class="dropdown">
+              <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="bi bi-three-dots"></i>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#"><i class="bi bi-pencil"></i> แก้ไข</a></li>
+                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash"></i> ลบ</a></li>
+              </ul>
+            </div>
+          </div>
+          <p class="mb-0">
+            เนื้อหาที่น่าสนใจมาก ขอบคุณสำหรับการแชร์ครับ!
+          </p>
+          <div class="comment-actions mt-2">
+            <button class="btn btn-sm btn-outline-primary me-2">
+              <i class="bi bi-hand-thumbs-up"></i> ถูกใจ (5)
+            </button>
+            <button class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-reply"></i> ตอบกลับ
+            </button>
+          </div>
+        </div> -->
+      </div>
+      {% endfor %} {% else %} ไม่มีคอมเม้น {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .comment-item {
+    transition: all 0.3s ease;
+  }
+
+  .comment-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .avatar {
+    min-width: 40px;
+  }
+
+  .comment-actions .btn {
+    font-size: 0.875rem;
+  }
+
+  .badge {
+    font-size: 0.85rem;
+  }
+
+  .card-header {
+    border-bottom: 2px solid #dee2e6;
+  }
+</style>
+{% endblock %}

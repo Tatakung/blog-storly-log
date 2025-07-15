@@ -1,0 +1,68 @@
+{% extends "base.html" %} {% block title %}
+<title>เข้าสู่ระบบ</title>
+{% endblock %} {% block content %}
+{% if messages %} {% for message in messages %}
+<div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+{% endfor %} {% endif %}
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div
+      class="col-md-10 col-lg-8 shadow rounded p-4 d-flex"
+      style="background-color: #f9f9f9"
+    >
+      <!-- Welcome Section -->
+      <div
+        class="col-md-6 d-flex flex-column justify-content-center align-items-center text-white p-4"
+        style="background-color: #749bc2; border-radius: 10px"
+      >
+        <h4>ยินดีต้อนรับ</h4>
+        <p class="text-center">
+          เข้าสู่ระบบเพื่อสร้างเรื่องราวให้ผู้คนได้รับชม
+        </p>
+      </div>
+
+      <!-- Login Form -->
+      <div class="col-md-6 p-4">
+        <h5 class="mb-4">เข้าสู่ระบบ</h5>
+        <form method="POST">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="email" class="form-label">อีเมล</label>
+            <input
+              type="email"
+              class="form-control"
+              id="email"
+              placeholder="ใส่อีเมล"
+              required
+              name="username"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">รหัสผ่าน</label>
+            <input
+              required
+              type="password"
+              class="form-control"
+              id="password"
+              placeholder="กรอกรหัสผ่าน"
+              name="password"
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">
+            เข้าสู่ระบบ
+          </button>
+        </form>
+
+        <div class="mt-3 text-center">
+          <small
+            >หากยังไม่มีบัญชี <a href="register">ลงทะเบียนเข้าใช้งาน</a></small
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

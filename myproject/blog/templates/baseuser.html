@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block title %}{% endblock %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      .sidebar-fixed {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 16.666%;
+        background-color: #749bc2;
+        padding: 20px;
+        color: white;
+      }
+
+      .content-area {
+        margin-left: 16.666%;
+        padding: 30px;
+      }
+
+      #nav-link {
+        text-decoration: none;
+        color: antiquewhite;
+        font-size: 21px;
+        display: block;
+        margin-bottom: 15px;
+      }
+
+      #nav-link:hover {
+        color: rgb(255, 204, 122);
+      }
+
+      .btn {
+        background-color: rgb(68, 23, 165);
+        color: white;
+      }
+
+      .btn:hover {
+        background-color: #749bc2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar-fixed">
+        <p>{{ request.user.first_name }} {{ request.user.last_name }}</p>
+      <p><a href="{% url 'homecontent' %}" id="nav-link">เพิ่มบทความ</a></p>
+      <p><a href="{% url 'contentme' %}" id="nav-link">บทความของฉัน</a></p>
+      <p><a href="{% url 'index' %}" id="nav-link">กลับสู่หน้าแรก</a></p>
+      <hr />
+      <p><a href="{% url 'logout' %}" class="btn btn-sm w-100">ออกจากระบบ</a></p>
+    </div>
+
+    <div class="content-area">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
+</html>

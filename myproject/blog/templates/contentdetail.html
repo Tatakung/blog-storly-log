@@ -1,0 +1,71 @@
+{% extends "baseuser.html" %} {% block title %}
+<title>อัปเดตบทความ</title>
+{% endblock %} {% block content %} 
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-6"> 
+      <input
+        type="text"
+        class="form-control"
+        placeholder="ชื่อบทความ"
+        required
+        name="name"
+        value="{{data.name}}"
+      />
+    </div>
+    <div class="col-6">
+      <select name="type" class="form-select" required>
+  <option value="">เลือกประเภท</option>
+  {% for i in category %}
+    <option value="{{i.id}}" {% if i.id == data.category.id %}selected{% endif %}>{{i.name}}</option>
+  {% endfor %}
+</select>
+
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12">
+      <textarea
+        name="content"
+        class="form-control"
+        id="exampleFormControlTextarea1"
+        rows="3"
+        placeholder="รายละเอียดบทความ"
+        style="height: 300px"
+      >{{data.content}}</textarea>
+    </div>
+  </div>
+  {% if data.image %}
+  <img src="{{ data.image.url }}" alt="{{ data.name }}" style="height: 100px;" class="mb-3">
+{% endif %}
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="mb-3">
+        <label for="formFileMultiple" class="form-label"
+          >รูปภาพ</label
+        >
+        <input
+          class="form-control"
+          type="file"
+          name="image"
+          id="formFileMultiple"
+          accept="image/*"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <button type="submit" class="btn btn">แก้ไข</button>
+  </div>
+</form>
+{% endblock %}

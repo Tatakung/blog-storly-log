@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}
+<title>สมัครสมาชิก - StoLy-log</title>
+{% endblock %}
+
+{% block content %}
+
+
+{% if messages %} {% for message in messages %}
+<div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+{% endfor %} {% endif %}
+
+
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8 shadow rounded p-4 d-flex" style="background-color: #f9f9f9;">
+      
+      <!-- Welcome Section -->
+      <div class="col-md-6 d-flex flex-column justify-content-center align-items-center text-white p-4" style="background-color: #749bc2; border-radius: 10px;">
+        <h4>ยินดีต้อนรับ</h4>
+        <p class="text-center">กรอกข้อมูลเพื่อสร้างบัญชีของคุณ</p>
+      </div>
+
+      <!-- Register Form -->
+      <div class="col-md-6 p-4">
+        <h4 class="mb-1 fw-bold text-primary">สมัครสมาชิก</h4>
+        <h5 class="mb-4 text-muted">StoLy-log</h5>
+
+        <form method="POST">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="first_name" class="form-label">ชื่อ</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="ชื่อจริง" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="last_name" class="form-label">สกุล</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="นามสกุล" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">อีเมล</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="กรอกอีเมล" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">รหัสผ่าน</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="รหัสผ่าน" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="confirm_password" class="form-label">ยืนยันรหัสผ่าน</label>
+            <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="พิมพ์รหัสผ่านอีกครั้ง" required>
+          </div>
+
+          <button type="submit" class="btn btn-success w-100">สมัครสมาชิก</button>
+        </form>
+
+        <div class="mt-3 text-center">
+          <small>มีบัญชีอยู่แล้วใช่ไหม? <a href="{% url 'login' %}">เข้าสู่ระบบ</a></small>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

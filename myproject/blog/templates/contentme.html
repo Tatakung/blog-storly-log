@@ -1,0 +1,58 @@
+{% extends "baseuser.html" %} {% block title %}
+<title>บทความของฉัน</title>
+
+{% endblock %} {% block content %} 
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+
+
+{% if blogMe %}
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">รหัส</th>
+      <th scope="col">ภาพปก</th>
+      <th scope="col">ชื่อบทความ</th>
+      <th scope="col">ยอดวิว</th>
+      <th scope="col">หมวดหมู่</th>
+      <th scope="col">จัดการ</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in blogMe %}
+    <tr>
+      <th scope="row">{{i.id}}</th>
+      <td>
+        <img src="{{ i.image.url }}" alt="{{ i.name }}" style="height: 80px" />
+      </td>
+      <td>{{i.name}}</td>
+      <td>{{i.views}}</td>
+      <td>{{i.category.name}}</td>
+      <td>
+        <form
+          action="{% url 'contentmedelete' i.id %}"
+          method="post"
+          style="display: inline"
+        >
+          {% csrf_token %}
+          <button type="submit" class="btn btn">ลบ</button>
+        </form>
+        <a class="btn btn" href="{% url 'contentmedetail' i.id %}">แก้ไข</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div>
+    <p class="text-center">ไม่มีบทความ</p>
+</div>
+{% endif %}
+{% endblock %}

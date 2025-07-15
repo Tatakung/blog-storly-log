@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+{% block title %}
+<title>ทั้งหมด</title>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <!-- Search Section -->
+  <div class="row justify-content-center mb-4">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <form action="{% url 'index' %}" class="d-flex gap-2">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="bi bi-search"></i>
+              </span>
+              <input
+                type="text"
+                name="article"
+                class="form-control"
+                placeholder="ค้นหาบทความ เช่น การเงิน, เทคโนโลยี..."
+              />
+              <button class="btn btn-primary" type="submit">
+                <i class="bi bi-search me-1"></i> ค้นหา
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Filter -->
+  <div class="mb-4">
+    <div class="card shadow-sm">
+      <div class="card-header bg-light">
+        <h6 class="mb-0">
+          <i class="bi bi-funnel"></i> หมวดหมู่
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-outline-primary active" href="/">
+            <i class="bi bi-grid"></i> ทั้งหมด
+          </a>
+          {% for item in category %}
+          <form action="{% url 'index' %}" class="d-inline">
+            <input type="hidden" name="category" value="{{ item.name }}" />
+            <button class="btn btn-outline-secondary" type="submit">
+              <i class="bi bi-tag"></i> {{item.name}}
+            </button>
+          </form>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="row">
+    <!-- Articles Section -->
+    <div class="col-lg-8">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="text-primary">
+          <i class="bi bi-newspaper"></i> บทความ{{valueType}}
+        </h3>
+        <span class="badge bg-secondary">
+          {% if blog %}{{blog|length}}{% else %}0{% endif %} บทความ
+        </span>
+      </div>
+
+      {% if blog %}
+        {% for i in blog %}
+        <div class="card mb-4 shadow-sm hover-card">
+          <div class="row g-0">
+            {% if i.image %}
+            <div class="col-md-4">
+              <img
+                src="{{ i.image.url }}"
+                class="img-fluid rounded-start h-100 object-fit-cover"
+                alt="{{ i.name }}"
+                style="min-height: 200px;"
+              />
+            </div>
+            <div class="col-md-8">
+            {% else %}
+            <div class="col-md-12">
+            {% endif %}
+              <div class="card-body">
+                <div class="mb-2">
+                  <span class="badge bg-light text-dark me-1">
+                    <i class="bi bi-calendar3"></i> {{i.date}}
+                  </span>
+                  <span class="badge bg-primary me-1">
+                    <i class="bi bi-folder"></i> {{i.category.name}}
+                  </span>
+                  <span class="badge bg-success me-1">
+                    <i class="bi bi-person"></i> {{i.customer}}
+                  </span>
+                  <span class="badge bg-warning">
+                    <i class="bi bi-eye"></i> {{i.views|default:"0"}}
+                  </span>
+                </div>
+                
+                <h5 class="card-title">{{i.name}}</h5>
+                <p class="card-text text-muted">{{ i.content|truncatewords:25 }}</p>
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <a class="btn btn-primary" href="{% url 'detail' i.id i.name %}">
+                    <i class="bi bi-book-open"></i> อ่านเพิ่มเติม
+                  </a>
+                  <small class="text-muted">
+                    <i class="bi bi-clock"></i> อัพเดทล่าสุด {{i.date}}
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="card border-0 text-center py-5">
+          <div class="card-body">
+            <i class="bi bi-inbox display-1 text-muted mb-3"></i>
+            <h4 class="text-muted">ไม่มีบทความดังกล่าว</h4>
+            <p class="text-muted">ลองเปลี่ยนหมวดหมู่หรือคำค้นหาใหม่</p>
+            <a href="/" class="btn btn-outline-primary">
+              <i class="bi bi-arrow-left"></i> กลับหน้าแรก
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <!-- Popular Articles -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0">
+            <i class="bi bi-fire"></i> บทความยอดนิยม
+          </h5>
+        </div>
+        <div class="card-body p-0">
+          {% if poppular %}
+            {% for i in poppular %}
+            <div class="border-bottom p-3 popular-item">
+              <div class="row g-2">
+                {% if i.image %}
+                <div class="col-4">
+                  <img
+                    src="{{ i.image.url }}"
+                    class="img-fluid rounded"
+                    alt="{{ i.name }}"
+                    style="height: 80px; object-fit: cover;"
+                  />
+                </div>
+                <div class="col-8">
+                {% else %}
+                <div class="col-12">
+                {% endif %}
+                  <h6 class="mb-1">
+                    <a href="{% url 'detail' i.id i.name %}" class="text-decoration-none">
+                      {{i.name}}
+                    </a>
+                  </h6>
+                  <small class="text-muted d-block mb-1">
+                    <i class="bi bi-calendar3"></i> {{i.date}}
+                    <i class="bi bi-folder ms-2"></i> {{i.category.name}}
+                  </small>
+                  <small class="text-muted">
+                    <i class="bi bi-eye"></i> {{i.views|default:"0"}} ครั้ง
+                  </small>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="p-3 text-center">
+              <i class="bi bi-graph-up text-muted mb-2" style="font-size: 2rem;"></i>
+              <p class="text-muted mb-0">ยังไม่มีบทความยอดนิยม</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      
+      <!-- <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+          <h6 class="mb-0">
+            <i class="bi bi-graph-up"></i> สถิติเว็บไซต์
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6">
+              <div class="border-end">
+                <h4 class="text-primary mb-1">{{blog|length|default:"0"}}</h4>
+                <small class="text-muted">บทความทั้งหมด</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <h4 class="text-success mb-1">{{category|length|default:"0"}}</h4>
+              <small class="text-muted">หมวดหมู่</small>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<style>
+.hover-card {
+  transition: all 0.3s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.popular-item {
+  transition: background-color 0.3s ease;
+}
+
+.popular-item:hover {
+  background-color: #f8f9fa;
+}
+
+.popular-item:last-child {
+  border-bottom: none !important;
+}
+
+.object-fit-cover {
+  object-fit: cover;
+}
+
+.btn-outline-primary.active {
+  background-color: #0d6efd;
+  color: white;
+  border-color: #0d6efd;
+}
+
+.card-header {
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+}
+
+.badge {
+  font-size: 0.75rem;
+}
+
+</style>
+{% endblock %}
